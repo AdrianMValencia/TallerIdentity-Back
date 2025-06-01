@@ -12,15 +12,18 @@ public class UnitOfWork : IUnitOfWork
     private readonly ApplicationDbContext _context;
     public IGenericRepository<Role> Role { get; }
     public IGenericRepository<UserRole> UserRole { get; }
+    public IGenericRepository<User> User { get; }
 
     public UnitOfWork(
         ApplicationDbContext context,
         IGenericRepository<Role> roleRepository,
-        IGenericRepository<UserRole> userRoleRepository)
+        IGenericRepository<UserRole> userRoleRepository,
+        IGenericRepository<User> user)
     {
         _context = context;
         Role = roleRepository;
         UserRole = userRoleRepository;
+        User = user;
     }
 
     public IDbTransaction BeginTransaction() =>
