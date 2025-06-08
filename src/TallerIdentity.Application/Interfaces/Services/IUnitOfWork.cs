@@ -8,7 +8,7 @@ public interface IUnitOfWork : IDisposable
 {
     IGenericRepository<Role> Role { get; }
     IGenericRepository<UserRole> UserRole { get; }
-    IGenericRepository<User> User { get; }
+    IUserRepository User { get; }
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
     IDbTransaction BeginTransaction();
 }

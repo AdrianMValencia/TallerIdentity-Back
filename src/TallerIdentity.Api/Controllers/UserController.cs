@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TallerIdentity.Application.Abstractions.Messaging;
 using TallerIdentity.Application.Dtos.Users;
 using TallerIdentity.Application.UseCases.Users.Commands.CreateUser;
@@ -9,6 +10,7 @@ using TallerIdentity.Application.UseCases.Users.Queries.GetById;
 
 namespace TallerIdentity.Api.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController(IDispatcher dispatcher) : ControllerBase
