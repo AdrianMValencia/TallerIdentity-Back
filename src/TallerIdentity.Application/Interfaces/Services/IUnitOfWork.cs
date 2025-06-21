@@ -9,6 +9,8 @@ public interface IUnitOfWork : IDisposable
     IGenericRepository<Role> Role { get; }
     IGenericRepository<UserRole> UserRole { get; }
     IUserRepository User { get; }
+    IPermissionRepository Permission { get; }
+    IMenuRepository Menu { get; }
     Task SaveChangesAsync(CancellationToken cancellationToken = default);
     IDbTransaction BeginTransaction();
 }

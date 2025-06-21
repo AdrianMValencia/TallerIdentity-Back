@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TallerIdentity.Application.Abstractions.Messaging;
+using TallerIdentity.Application.Dtos.Commons;
 using TallerIdentity.Application.Dtos.Users;
 using TallerIdentity.Application.UseCases.Users.Commands.CreateUser;
 using TallerIdentity.Application.UseCases.Users.Commands.DeleteUser;
 using TallerIdentity.Application.UseCases.Users.Commands.UpdateUser;
 using TallerIdentity.Application.UseCases.Users.Queries.GetAllUser;
 using TallerIdentity.Application.UseCases.Users.Queries.GetById;
+using TallerIdentity.Application.UseCases.Users.Queries.GetUserSelect;
 
 namespace TallerIdentity.Api.Controllers;
 
@@ -33,6 +35,15 @@ public class UserController(IDispatcher dispatcher) : ControllerBase
             .Dispatch<GetByIdUserQuery, UserByIdResponseDto>
             (new GetByIdUserQuery { UserId = userId }, CancellationToken.None);
 
+        return response.IsSuccess ? Ok(response) : BadRequest(response);
+    }
+
+    [HttpGet("Select")]
+    public async Task<IActionResult> UserSelect()
+    {
+        var response = await _dispatcher
+            .Dispatch<GetUserSelectQuery, IEnumerable<SelectResponseDto>>
+            (new GetUserSelectQuery(), CancellationToken.None);
         return response.IsSuccess ? Ok(response) : BadRequest(response);
     }
 

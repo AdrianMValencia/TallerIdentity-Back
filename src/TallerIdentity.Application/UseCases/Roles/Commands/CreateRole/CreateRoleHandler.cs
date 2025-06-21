@@ -38,8 +38,8 @@ internal sealed class CreateRoleHandler(IUnitOfWork unitOfWork) : ICommandHandle
                 })
                 .ToList();
 
-            //await _unitOfWork.Permission.RegisterRolePermissions(permissions);
-            //await _unitOfWork.Menu.RegisterRoleMenus(menus);
+            await _unitOfWork.Permission.RegisterRolePermissions(permissions);
+            await _unitOfWork.Menu.RegisterRoleMenus(menus);
 
             transaction.Commit();
             response.IsSuccess = true;

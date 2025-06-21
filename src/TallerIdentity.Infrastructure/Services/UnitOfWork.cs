@@ -13,17 +13,23 @@ public class UnitOfWork : IUnitOfWork
     public IGenericRepository<Role> Role { get; }
     public IGenericRepository<UserRole> UserRole { get; }
     public IUserRepository User { get; }
+    public IPermissionRepository Permission { get; }
+    public IMenuRepository Menu { get; }
 
     public UnitOfWork(
         ApplicationDbContext context,
         IGenericRepository<Role> roleRepository,
         IGenericRepository<UserRole> userRoleRepository,
-        IUserRepository user)
+        IUserRepository user,
+        IPermissionRepository permission,
+        IMenuRepository menu)
     {
         _context = context;
         Role = roleRepository;
         UserRole = userRoleRepository;
         User = user;
+        Permission = permission;
+        Menu = menu;
     }
 
     public IDbTransaction BeginTransaction() =>

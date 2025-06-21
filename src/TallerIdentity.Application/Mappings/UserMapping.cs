@@ -1,4 +1,5 @@
 ﻿using Mapster;
+using TallerIdentity.Application.Dtos.Commons;
 using TallerIdentity.Application.Dtos.Users;
 using TallerIdentity.Application.UseCases.Users.Commands.CreateUser;
 using TallerIdentity.Domain.Entities;
@@ -16,6 +17,11 @@ public class UserMapping : IRegister
 
         config.NewConfig<User, UserByIdResponseDto>()
             .Map(dest => dest.UserId, src => src.Id)
+            .TwoWays();
+
+        config.NewConfig<User, SelectResponseDto>()
+            .Map(dest => dest.Code, src => src.Id)
+            .Map(dest => dest.Description, src => src.FirstName + " " + src.LastName)
             .TwoWays();
 
         config.NewConfig<CreateUserCommand, User>();
