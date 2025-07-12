@@ -12,7 +12,7 @@ using TallerIdentity.Application.UseCases.Users.Queries.GetUserSelect;
 
 namespace TallerIdentity.Api.Controllers;
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController(IDispatcher dispatcher) : ControllerBase
