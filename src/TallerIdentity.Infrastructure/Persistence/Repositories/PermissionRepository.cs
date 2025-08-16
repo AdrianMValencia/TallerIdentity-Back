@@ -25,6 +25,26 @@ public class PermissionRepository(ApplicationDbContext context) : IPermissionRep
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Permission>> GetPermissionsByMenuId(int menuId)
+    {
+        var menuPermissions = await _context.Permissions
+            .AsNoTracking()
+            .Where(x => x.MenuId == menuId)
+            .ToListAsync();
+
+        return menuPermissions;
+    }
+
+    public async Task<IEnumerable<Permission>> GetRolePermissionsByMenuId(int roleId, int menuId)
+    {
+        var rolePermissions = _context.RolePermissions
+            .Where(rp => rp.RoleId == roleId && rp.Permission.MenuId == menuId)
+            .Select(rp => rp.Permission);
+
+        var data = await rolePermissions.ToListAsync();
+        return data;
+    }
+
     public async Task<bool> RegisterRolePermissions(IEnumerable<RolePermission> rolePermissions)
     {
         foreach (var rolePermission in rolePermissions)

@@ -17,6 +17,17 @@ public class MenuRepository(ApplicationDbContext context) : IMenuRepository
         return recordsAffected > 0;
     }
 
+    public async Task<IEnumerable<Menu>> GetMenuPermissionAsync()
+    {
+        var query = _context.Menus
+            .AsNoTracking()
+            .AsSplitQuery()
+            .Where(m => m.Url != null && m.State == "1");
+
+        var menus = await query.ToListAsync();
+        return menus;
+    }
+
     public async Task<IEnumerable<MenuRole>> GetMenuRolesByRoleId(int roleId)
     {
         return await _context.MenuRoles

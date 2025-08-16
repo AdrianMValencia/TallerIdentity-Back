@@ -18,7 +18,7 @@ internal sealed class LoginHandler(IUnitOfWork unitOfWork, IJwtTokenGenerator jw
 
         try
         {
-            var user = await _unitOfWork.User.UserByEmailAsync(query.Email);
+            var user = await _unitOfWork.User.UserByEmailAsyncDapper(query.Email);
 
             if (user is null)
             {
