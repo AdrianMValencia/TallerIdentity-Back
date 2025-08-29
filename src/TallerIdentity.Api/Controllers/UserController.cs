@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using TallerIdentity.Application.Abstractions.Messaging;
 using TallerIdentity.Application.Dtos.Commons;
 using TallerIdentity.Application.Dtos.Users;
+using TallerIdentity.Application.Helpers;
+using TallerIdentity.Application.Interfaces.Services;
 using TallerIdentity.Application.UseCases.Users.Commands.CreateUser;
 using TallerIdentity.Application.UseCases.Users.Commands.DeleteUser;
 using TallerIdentity.Application.UseCases.Users.Commands.UpdateUser;
@@ -12,12 +15,13 @@ using TallerIdentity.Application.UseCases.Users.Queries.GetUserSelect;
 
 namespace TallerIdentity.Api.Controllers;
 
-[Authorize]
+//[Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(IDispatcher dispatcher) : ControllerBase
+public class UserController(IDispatcher dispatcher, IExcelService excelService) : ControllerBase
 {
     private readonly IDispatcher _dispatcher = dispatcher;
+    private readonly IExcelService _excelService = excelService;
 
     [HttpGet]
     public async Task<IActionResult> UserList([FromQuery] GetAllUserQuery query)
@@ -26,6 +30,17 @@ public class UserController(IDispatcher dispatcher) : ControllerBase
             .Dispatch<GetAllUserQuery, IEnumerable<UserResponseDto>>(query, CancellationToken.None);
 
         return response.IsSuccess ? Ok(response) : BadRequest(response);
+    }
+
+    [HttpGet("Excel")]
+    public async Task<IActionResult> UserReport([FromQuery] GetAllUserQuery query)
+    {
+        var response = await _dispatcher
+            .Dispatch<GetAllUserQuery, IEnumerable<UserResponseDto>>(query, CancellationToken.None);
+
+        var columnNames = ExcelColumns.GetColumnsUsers();
+        var fileBytes = _excelService.GenerateToExcel(response.Data!, columnNames);
+        return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
     }
 
     [HttpGet("{userId:int}")]
