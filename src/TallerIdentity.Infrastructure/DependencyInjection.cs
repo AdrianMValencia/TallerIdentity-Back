@@ -25,7 +25,7 @@ public static class DependencyInjection
                 x => x.MigrationsAssembly(assembly)));
 
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-        
+
         var infraAsm = Assembly.GetExecutingAssembly();
         foreach (var impl in infraAsm.GetTypes()
                      .Where(t => t.IsClass && !t.IsAbstract && t.Name.EndsWith("Repository")))
@@ -38,7 +38,9 @@ public static class DependencyInjection
 
         services.AddScoped<IUnitOfWork, UnitOfWork>();
         services.AddTransient<IOrderingQuery, OrderingQuery>();
+
         services.AddTransient<IExcelService, ExcelService>();
+        services.AddTransient<IPdfService, PdfService>();
 
         services.Configure<JwtSettings>(configuration.GetSection(JwtSettings.SectionName));
         services.AddSingleton<IJwtTokenGenerator, JwtTokenGenerator>();

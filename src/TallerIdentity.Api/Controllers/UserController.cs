@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using System.Net.Mime;
+﻿using Microsoft.AspNetCore.Mvc;
 using TallerIdentity.Application.Abstractions.Messaging;
 using TallerIdentity.Application.Dtos.Commons;
 using TallerIdentity.Application.Dtos.Users;
@@ -18,10 +16,11 @@ namespace TallerIdentity.Api.Controllers;
 //[Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(IDispatcher dispatcher, IExcelService excelService) : ControllerBase
+public class UserController(IDispatcher dispatcher, IExcelService excelService, IPdfService pdfService) : ControllerBase
 {
     private readonly IDispatcher _dispatcher = dispatcher;
     private readonly IExcelService _excelService = excelService;
+    private readonly IPdfService _pdfService = pdfService;
 
     [HttpGet]
     public async Task<IActionResult> UserList([FromQuery] GetAllUserQuery query)
@@ -33,14 +32,25 @@ public class UserController(IDispatcher dispatcher, IExcelService excelService) 
     }
 
     [HttpGet("Excel")]
-    public async Task<IActionResult> UserReport([FromQuery] GetAllUserQuery query)
+    public async Task<IActionResult> UserReportExcel([FromQuery] GetAllUserQuery query)
     {
         var response = await _dispatcher
             .Dispatch<GetAllUserQuery, IEnumerable<UserResponseDto>>(query, CancellationToken.None);
 
-        var columnNames = ExcelColumns.GetColumnsUsers();
+        var columnNames = ReportColumns.GetColumnsUsers();
         var fileBytes = _excelService.GenerateToExcel(response.Data!, columnNames);
         return File(fileBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    }
+
+    [HttpGet("Pdf")]
+    public async Task<IActionResult> UserReportPdf([FromQuery] GetAllUserQuery query)
+    {
+        var response = await _dispatcher
+            .Dispatch<GetAllUserQuery, IEnumerable<UserResponseDto>>(query, CancellationToken.None);
+
+        var columnNames = ReportColumns.GetColumnsUsers();
+        var fileBytes = _pdfService.GenerateToPdf(response.Data!, columnNames, "Usuarios");
+        return File(fileBytes, "application/pdf");
     }
 
     [HttpGet("{userId:int}")]

@@ -1,6 +1,6 @@
 ﻿namespace TallerIdentity.Application.Helpers;
 
-public class ExcelColumns
+public class ReportColumns
 {
     public static List<(string ColumnName, string PropertyName)> GetColumnsUsers()
     {
